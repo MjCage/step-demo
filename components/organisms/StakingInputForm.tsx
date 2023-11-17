@@ -1,11 +1,12 @@
 "use client";
 
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { IoSwapVerticalOutline } from "react-icons/io5";
 
 import { BalanceInput } from "../molecules/BalanceInput";
 import { TokenSymbol } from "@/utils/token-symbols";
 import { useWalletInfo } from "@/hooks/useWalletInfo";
+import { capitalizeFirstLetter } from "@/utils/string-helper";
 
 const config = [
   {
@@ -21,14 +22,40 @@ const config = [
 ];
 
 export const StakingInputForm: FC = () => {
-  const { stepBalance, xStepBalance } = useWalletInfo();
+  const { solBalance, stepBalance, xStepBalance } = useWalletInfo();
 
   const [isStaking, setIsStaking] = useState(true);
 
   const [inputValue, setInputValue] = useState("");
   const [outputValue, setOutputValue] = useState("");
 
+  const [buttonText, setButtonText] = useState("Stake");
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
   const currentConfig = useMemo(() => config[isStaking ? 0 : 1], [isStaking]);
+
+  useEffect(() => {
+    const inputAmount = Number(inputValue);
+
+    if (isNaN(inputAmount) || inputAmount === 0) {
+      setButtonText(capitalizeFirstLetter(currentConfig.action));
+      setButtonDisabled(true);
+    } else {
+      if (currentConfig.input === TokenSymbol.STEP && inputAmount > (stepBalance ?? 0)) {
+        setButtonText("Insufficient STEP balance");
+        setButtonDisabled(true);
+      } else if (currentConfig.input === TokenSymbol.xSTEP && inputAmount > (xStepBalance ?? 0)) {
+        setButtonText("Insufficient xSTEP balance");
+        setButtonDisabled(true);
+      } else if ((solBalance ?? 0) < 0.005) {
+        setButtonText("Insufficient SOL balance");
+        setButtonDisabled(true);
+      } else {
+        setButtonText(capitalizeFirstLetter(currentConfig.action));
+        setButtonDisabled(false);
+      }
+    }
+  }, [inputValue, currentConfig, solBalance]);
 
   return (
     <div className="p-4 bg-accent rounded-lg w-full max-w-md flex flex-col items-center">
@@ -67,9 +94,10 @@ export const StakingInputForm: FC = () => {
       />
       <button
         type="button"
-        className="w-full px-4 py-2 text-white bg-primary hover:bg-opacity-80 active:bg-opacity-70 rounded mt-6 text-xl font-semibold transition duration-200 ease-in-out"
+        className="w-full px-4 py-2 text-white bg-primary hover:bg-opacity-80 active:bg-opacity-70 rounded mt-6 text-xl font-semibold transition duration-200 ease-in-out disabled:bg-gray-600"
+        disabled={buttonDisabled}
       >
-        {currentConfig.action.toUpperCase()}
+        {buttonText}
       </button>
     </div>
   );
