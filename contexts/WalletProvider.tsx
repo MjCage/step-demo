@@ -16,8 +16,7 @@ interface WalletContextProviderProps {
 
 export const WalletContextProvider: FC<WalletContextProviderProps> = ({ children }) => {
   const network = WalletAdapterNetwork.Mainnet;
-
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT ?? clusterApiUrl(network);
 
   const wallets = useMemo(
     () => [new SolflareWalletAdapter(), new PhantomWalletAdapter()],

@@ -5,6 +5,7 @@ import { IoSwapVerticalOutline } from "react-icons/io5";
 
 import { BalanceInput } from "../molecules/BalanceInput";
 import { TokenSymbol } from "@/utils/token-symbols";
+import { useWalletInfo } from "@/hooks/useWalletInfo";
 
 const config = [
   {
@@ -20,6 +21,8 @@ const config = [
 ];
 
 export const StakingInputForm: FC = () => {
+  const { stepBalance, xStepBalance } = useWalletInfo();
+
   const [isStaking, setIsStaking] = useState(true);
 
   const [inputValue, setInputValue] = useState("");
@@ -32,6 +35,7 @@ export const StakingInputForm: FC = () => {
       <BalanceInput
         title={`You ${currentConfig.action}`}
         symbol={currentConfig.input}
+        balance={currentConfig.input === TokenSymbol.STEP ? stepBalance : xStepBalance}
         value={inputValue}
         className="w-full"
         onChange={(v) => {
@@ -49,6 +53,7 @@ export const StakingInputForm: FC = () => {
       <BalanceInput
         title="You recieve"
         symbol={currentConfig.output}
+        balance={currentConfig.output === TokenSymbol.STEP ? stepBalance : xStepBalance}
         className="mt-3 w-full"
         value={outputValue}
         onChange={(v) => {
