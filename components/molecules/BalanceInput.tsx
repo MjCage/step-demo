@@ -15,9 +15,9 @@ interface BalanceInputProps {
 export const BalanceInput: FC<BalanceInputProps> = ({ title, symbol, value, className, onChange }) => {
   return (
     <div className={className}>
-      <div className="flex items-center justify-between text-sm font-light">
-        <span>{title}</span>
-        <span>Balance: 0 {symbol}</span>
+      <div className="flex items-end justify-between text-sm font-light mt-2">
+        <span className="text-lg leading-5">{title}</span>
+        <span className="leading-5">Balance: 0 {symbol}</span>
       </div>
       <div className="flex items-center w-full rounded bg-[#1c1c1c] mt-2 p-2">
         <div className="flex items-center gap-2 ml-2 text-sm">

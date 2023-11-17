@@ -49,7 +49,7 @@ export const StakingInputForm: FC = () => {
       <BalanceInput
         title="You recieve"
         symbol={currentConfig.output}
-        className="mt-5 w-full"
+        className="mt-3 w-full"
         value={outputValue}
         onChange={(v) => {
           setOutputValue(v);
