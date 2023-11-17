@@ -9,6 +9,7 @@ interface BalanceInputProps {
   value: string;
   className?: string;
   onChange: (newValue: string) => void;
+  onMaxBalance?: (maxBalance: string) => void;
 }
 
 const formatNumber = (input: string) => {
@@ -24,14 +25,30 @@ const formatNumber = (input: string) => {
   return decimal !== undefined ? `${whole}.${decimal}` : whole;
 };
 
-export const BalanceInput: FC<BalanceInputProps> = ({ title, symbol, balance, value, className, onChange }) => {
+export const BalanceInput: FC<BalanceInputProps> = ({
+  title,
+  symbol,
+  balance,
+  value,
+  className,
+  onChange,
+  onMaxBalance,
+}) => {
   return (
     <div className={className}>
       <div className="flex items-end justify-between text-sm font-light mt-2">
         <span className="text-lg leading-5">{title}</span>
-        <span className="leading-5">
-          Balance: {(balance ?? 0).toString()} {symbol}
-        </span>
+        <div className="leading-5">
+          Balance:{" "}
+          <button
+            type="button"
+            className={!onMaxBalance ? "" : "hover:underline"}
+            disabled={!onMaxBalance}
+            onClick={() => onMaxBalance?.((balance ?? 0).toString())}
+          >
+            {(balance ?? 0).toString()} {symbol}
+          </button>
+        </div>
       </div>
       <div className="flex items-center w-full rounded bg-[#1c1c1c] mt-2 p-2">
         <div className="flex items-center gap-2 ml-2 text-sm">

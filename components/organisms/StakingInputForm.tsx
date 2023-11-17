@@ -42,6 +42,10 @@ export const StakingInputForm: FC = () => {
           setInputValue(v);
           // ToDo: Adjust outputValue
         }}
+        onMaxBalance={(v) => {
+          setInputValue(v);
+          /// ToDo: Adjust outputValue
+        }}
       />
       <button
         type="button"
