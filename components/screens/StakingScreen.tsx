@@ -1,6 +1,7 @@
 "use client";
 
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { StakingInputForm } from "../organisms/StakingInputForm";
 
 export const StakingScreen: React.FC = () => {
   return (
@@ -8,6 +9,7 @@ export const StakingScreen: React.FC = () => {
       <div className="absolute top-0 right-0 bg-[#2c2d30] rounded m-8">
         <WalletMultiButton />
       </div>
+      <StakingInputForm />
     </div>
   );
 };

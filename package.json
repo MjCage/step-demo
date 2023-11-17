@@ -19,7 +19,8 @@
     "next": "14.0.3",
     "pino-pretty": "^10.2.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^4.12.0"
   },
   "devDependencies": {
     "@stepfinance/prettier-config": "^1.0.0",
