@@ -43,7 +43,7 @@ export const ConnectScreen: React.FC = () => {
       <div className={`mt-12 transition-opacity duration-1000 ${imageLoaded ? "opacity-100" : "opacity-0"}`}>
         <span className="text-lg font-semibold">{typedText}</span>
       </div>
-      <div className={`mt-6 transition duration-300 bg-[#2c2d30] rounded ${textShown ? "opacity-100" : "opacity-0"}`}>
+      <div className={`mt-6 transition duration-300 bg-accent rounded ${textShown ? "opacity-100" : "opacity-0"}`}>
         <WalletModalButton>Connect your Wallet</WalletModalButton>
       </div>
     </div>

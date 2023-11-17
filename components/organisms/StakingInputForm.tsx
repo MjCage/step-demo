@@ -28,7 +28,7 @@ export const StakingInputForm: FC = () => {
   const currentConfig = useMemo(() => config[isStaking ? 0 : 1], [isStaking]);
 
   return (
-    <div className="p-4 bg-[#2c2d30] rounded-lg w-full max-w-md flex flex-col items-center">
+    <div className="p-4 bg-accent rounded-lg w-full max-w-md flex flex-col items-center">
       <BalanceInput
         title={`You ${currentConfig.action}`}
         symbol={currentConfig.input}
@@ -58,7 +58,7 @@ export const StakingInputForm: FC = () => {
       />
       <button
         type="button"
-        className="w-full px-4 py-2 text-white bg-green-500 hover:bg-opacity-80 active:bg-opacity-70 rounded mt-6 text-xl font-semibold transition duration-200 ease-in-out"
+        className="w-full px-4 py-2 text-white bg-primary hover:bg-opacity-80 active:bg-opacity-70 rounded mt-6 text-xl font-semibold transition duration-200 ease-in-out"
       >
         {currentConfig.action.toUpperCase()}
       </button>
