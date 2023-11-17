@@ -10,7 +10,18 @@ interface BalanceInputProps {
   onChange: (newValue: string) => void;
 }
 
-// ToDo: Validate before onChange
+const formatNumber = (input: string) => {
+  const cleaned = input.replace(/[^\d.]/g, "");
+
+  let [whole, decimal] = cleaned.split(".");
+  whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  if (decimal) {
+    decimal = decimal.substring(0, 9);
+  }
+
+  return decimal !== undefined ? `${whole}.${decimal}` : whole;
+};
 
 export const BalanceInput: FC<BalanceInputProps> = ({ title, symbol, value, className, onChange }) => {
   return (
@@ -28,7 +39,7 @@ export const BalanceInput: FC<BalanceInputProps> = ({ title, symbol, value, clas
           className="w-full bg-transparent text-2xl p-2 text-right focus:outline-none"
           value={value}
           placeholder="0.00"
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(formatNumber(e.target.value))}
         />
       </div>
     </div>
