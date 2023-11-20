@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const StakingScreen: React.FC = () => {
   return (
-    <div className="flex flex-col items-center h-screen w-full">
+    <div className="flex flex-col items-center h-screen w-full p-3 mb-20">
       <Image src="/step-logo.svg" alt="Step logo" width={116} height={42} className="absolute top-0 left-0 m-8" />
       <div className="absolute top-0 right-0 bg-accent rounded m-8">
         <WalletMultiButton />
