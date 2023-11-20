@@ -2,7 +2,7 @@ import { IDL as stepStakingIdl } from "../target/types/step_staking";
 import { STAKING_PROGRAM, STEP_TOKEN_MINT, XSTEP_TOKEN_MINT } from "@/utils/addresses";
 import { AnchorProvider, BN, Program } from "@coral-xyz/anchor";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useWalletInfo } from "./useWalletInfo";
 import {
@@ -10,7 +10,6 @@ import {
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddress,
 } from "@solana/spl-token";
-import { Schema, deserialize } from "borsh";
 
 export const useStepStaking = () => {
   const { connection } = useConnection();
@@ -66,7 +65,7 @@ export const useStepStaking = () => {
   const stakeStep = useCallback(
     async (amount: number) => {
       if (!publicKey || !vaultBump || !vaultPubkey || !stepAta) {
-        throw new Error("Wallet not connected!");
+        throw new Error("Something went wrong!");
       }
 
       const stakeTx = new Transaction();
@@ -95,11 +94,47 @@ export const useStepStaking = () => {
 
       return stakeTx;
     },
-    [publicKey, vaultBump, vaultPubkey, stepAta],
+    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta],
+  );
+
+  const unstakeStep = useCallback(
+    async (amount: number) => {
+      if (!publicKey || !vaultBump || !vaultPubkey || !xStepAta) {
+        throw new Error("Something went wrong!");
+      }
+
+      const unstakeTx = new Transaction();
+      let stepAtaAddress = stepAta;
+
+      // If no step Ata exists yet
+      if (!stepAtaAddress) {
+        stepAtaAddress = await getAssociatedTokenAddress(STEP_TOKEN_MINT, publicKey);
+        unstakeTx.add(createAssociatedTokenAccountInstruction(publicKey, stepAtaAddress, publicKey, STEP_TOKEN_MINT));
+      }
+
+      const unstakeIx = await program.methods
+        .unstake(vaultBump, new BN(amount))
+        .accountsStrict({
+          tokenMint: STEP_TOKEN_MINT,
+          xTokenMint: XSTEP_TOKEN_MINT,
+          xTokenFrom: xStepAta,
+          xTokenFromAuthority: publicKey,
+          tokenVault: vaultPubkey,
+          tokenTo: stepAtaAddress,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction();
+
+      unstakeTx.add(unstakeIx);
+
+      return unstakeTx;
+    },
+    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta],
   );
 
   return {
     stepPerXStep,
     stakeStep,
+    unstakeStep,
   };
 };

@@ -29,8 +29,8 @@ const config = [
 export const StakingInputForm: FC = () => {
   const { connection } = useConnection();
   const { sendTransaction } = useWallet();
-  const { solBalance, stepBalance, xStepBalance } = useWalletInfo();
-  const { stepPerXStep, stakeStep } = useStepStaking();
+  const { solBalance, stepBalance, xStepBalance, refetchBalances } = useWalletInfo();
+  const { stepPerXStep, stakeStep, unstakeStep } = useStepStaking();
 
   const [isStaking, setIsStaking] = useState(true);
 
@@ -71,7 +71,18 @@ export const StakingInputForm: FC = () => {
     }
 
     const tx = await stakeStep(Number(inputValue) * LAMPORTS_PER_SOL);
-    handleTx(connection, tx, sendTransaction);
+    await handleTx(connection, tx, sendTransaction);
+    refetchBalances();
+  };
+
+  const handleUnstake = async () => {
+    if (Number.isNaN(inputValue)) {
+      return;
+    }
+
+    const tx = await unstakeStep(Number(inputValue) * LAMPORTS_PER_SOL);
+    await handleTx(connection, tx, sendTransaction);
+    refetchBalances();
   };
 
   return (
@@ -124,14 +135,14 @@ export const StakingInputForm: FC = () => {
           onChange={(v) => {
             setInputValue(v);
             if (v !== "") {
-              setOutputValue((Number(v) / (stepPerXStep ?? 1)).toFixed(9));
+              setOutputValue((Number(v) / (stepPerXStep ?? 1) ** (isStaking ? 1 : -1)).toFixed(9));
             } else {
               setOutputValue("");
             }
           }}
           onMaxBalance={(v) => {
             setInputValue(v);
-            setOutputValue((Number(v) / (stepPerXStep ?? 1)).toFixed(9));
+            setOutputValue((Number(v) / (stepPerXStep ?? 1) ** (isStaking ? 1 : -1)).toFixed(9));
           }}
         />
         <IoMdArrowDown className="w-9 h-9 mt-2 text-secondary" />
@@ -144,7 +155,7 @@ export const StakingInputForm: FC = () => {
           onChange={(v) => {
             setOutputValue(v);
             if (v !== "") {
-              setInputValue((Number(v) * (stepPerXStep ?? 1)).toFixed(9));
+              setInputValue((Number(v) * (stepPerXStep ?? 1) ** (isStaking ? 1 : -1)).toFixed(9));
             } else {
               setInputValue("");
             }
@@ -156,12 +167,7 @@ export const StakingInputForm: FC = () => {
         className="w-full h-full max-h-[60px] px-4 py-2 text-primary bg-primary-bg rounded-sm mt-5 font-semibold transition duration-500 ease-in-out
                 hover:bg-primary hover:text-black disabled:text-disabled-text disabled:bg-disabled-bg"
         disabled={buttonDisabled}
-        onClick={() => {
-          if (isStaking) {
-            handleStake();
-          } else {
-          }
-        }}
+        onClick={isStaking ? handleStake : handleUnstake}
       >
         {buttonText}
       </button>
