@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { WalletContextProvider } from "@/contexts/WalletProvider";
+import { Toaster } from "react-hot-toast";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={jakarta.className}>
         <WalletContextProvider>{children}</WalletContextProvider>
+        <Toaster />
       </body>
     </html>
   );

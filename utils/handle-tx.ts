@@ -1,5 +1,6 @@
 import { SendTransactionOptions } from "@solana/wallet-adapter-base";
 import { Connection, Transaction } from "@solana/web3.js";
+import toast from "react-hot-toast";
 
 export const handleTx = async (
   connection: Connection,
@@ -16,16 +17,16 @@ export const handleTx = async (
       value: { blockhash, lastValidBlockHeight },
     } = await connection.getLatestBlockhashAndContext();
 
-    // ToDo: Add toast for signing tx
-
     const signature = await sendTransaction(transaction, connection, { minContextSlot });
 
-    // ToDo: Add toast for transaction sent to blockchain waiting for confirmation
+    const txPromise = connection.confirmTransaction({ blockhash, lastValidBlockHeight, signature });
 
-    await connection.confirmTransaction({ blockhash, lastValidBlockHeight, signature });
-
-    // ToDo: Show toast for successful tx plus signature
+    toast.promise(txPromise, {
+      loading: "Transaction was sent! Please wait.",
+      success: () => `Transaction successful!`,
+      error: () => "Ups, something went wrong. Try again!",
+    });
   } catch {
-    // ToDo: Add toast for failed tx
+    toast.error("Ups, something went wrong. Try again!");
   }
 };
