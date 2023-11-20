@@ -8,10 +8,10 @@ import { BalanceInput } from "../molecules/BalanceInput";
 import { TokenSymbol } from "@/utils/token-symbols";
 import { useWalletInfo } from "@/hooks/useWalletInfo";
 import { capitalizeFirstLetter } from "@/utils/string-helper";
-import { stakeStep } from "@/utils/staking";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { handleTx } from "@/utils/handle-tx";
+import { useStepStaking } from "@/hooks/useStepStaking";
 
 const config = [
   {
@@ -29,7 +29,8 @@ const config = [
 export const StakingInputForm: FC = () => {
   const { connection } = useConnection();
   const { sendTransaction } = useWallet();
-  const { publicKey, solBalance, stepBalance, xStepBalance, stepAta, xStepAta } = useWalletInfo();
+  const { solBalance, stepBalance, xStepBalance } = useWalletInfo();
+  const { stepPerXStep, stakeStep } = useStepStaking();
 
   const [isStaking, setIsStaking] = useState(true);
 
@@ -65,11 +66,11 @@ export const StakingInputForm: FC = () => {
   }, [inputValue, currentConfig, solBalance]);
 
   const handleStake = async () => {
-    if (!publicKey || !stepAta || Number.isNaN(inputValue)) {
+    if (Number.isNaN(inputValue)) {
       return;
     }
 
-    const tx = await stakeStep(connection, publicKey, stepAta, xStepAta, Number(inputValue) * LAMPORTS_PER_SOL);
+    const tx = await stakeStep(Number(inputValue) * LAMPORTS_PER_SOL);
     handleTx(connection, tx, sendTransaction);
   };
 
@@ -81,7 +82,15 @@ export const StakingInputForm: FC = () => {
           className={`w-[150px] py-3 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
             isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
           }`}
-          onClick={() => setIsStaking(true)}
+          onClick={() => {
+            if (!isStaking) {
+              const temp = inputValue;
+              setInputValue(outputValue);
+              setOutputValue(temp);
+            }
+
+            setIsStaking(true);
+          }}
         >
           <TbArrowBarToDown className="w-5 h-5" />
           Stake
@@ -91,7 +100,15 @@ export const StakingInputForm: FC = () => {
           className={`w-[150px] py-3 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
             !isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
           }`}
-          onClick={() => setIsStaking(false)}
+          onClick={() => {
+            if (isStaking) {
+              const temp = inputValue;
+              setInputValue(outputValue);
+              setOutputValue(temp);
+            }
+
+            setIsStaking(false);
+          }}
         >
           <TbArrowBarUp className="w-5 h-5" />
           Unstake
@@ -106,11 +123,15 @@ export const StakingInputForm: FC = () => {
           className="w-full"
           onChange={(v) => {
             setInputValue(v);
-            // ToDo: Adjust outputValue
+            if (v !== "") {
+              setOutputValue((Number(v) / (stepPerXStep ?? 1)).toFixed(9));
+            } else {
+              setOutputValue("");
+            }
           }}
           onMaxBalance={(v) => {
             setInputValue(v);
-            /// ToDo: Adjust outputValue
+            setOutputValue((Number(v) / (stepPerXStep ?? 1)).toFixed(9));
           }}
         />
         <IoMdArrowDown className="w-9 h-9 mt-2 text-secondary" />
@@ -122,7 +143,11 @@ export const StakingInputForm: FC = () => {
           value={outputValue}
           onChange={(v) => {
             setOutputValue(v);
-            // ToDo: Adjust inputValue
+            if (v !== "") {
+              setInputValue((Number(v) * (stepPerXStep ?? 1)).toFixed(9));
+            } else {
+              setInputValue("");
+            }
           }}
         />
       </div>
