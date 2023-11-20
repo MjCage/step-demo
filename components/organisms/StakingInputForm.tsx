@@ -63,7 +63,7 @@ export const StakingInputForm: FC = () => {
       <div className="flex text-sm font-semibold">
         <button
           type="button"
-          className={`w-[150px] py-2.5 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
+          className={`w-[150px] py-3 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
             isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
           }`}
           onClick={() => setIsStaking(true)}
@@ -73,7 +73,7 @@ export const StakingInputForm: FC = () => {
         </button>
         <button
           type="button"
-          className={`w-[150px] py-2.5 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
+          className={`w-[150px] py-3 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
             !isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
           }`}
           onClick={() => setIsStaking(false)}
