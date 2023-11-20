@@ -8,6 +8,10 @@ import { BalanceInput } from "../molecules/BalanceInput";
 import { TokenSymbol } from "@/utils/token-symbols";
 import { useWalletInfo } from "@/hooks/useWalletInfo";
 import { capitalizeFirstLetter } from "@/utils/string-helper";
+import { stakeStep } from "@/utils/staking";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { handleTx } from "@/utils/handle-tx";
 
 const config = [
   {
@@ -23,7 +27,9 @@ const config = [
 ];
 
 export const StakingInputForm: FC = () => {
-  const { solBalance, stepBalance, xStepBalance } = useWalletInfo();
+  const { connection } = useConnection();
+  const { sendTransaction } = useWallet();
+  const { publicKey, solBalance, stepBalance, xStepBalance, stepAta, xStepAta } = useWalletInfo();
 
   const [isStaking, setIsStaking] = useState(true);
 
@@ -57,6 +63,15 @@ export const StakingInputForm: FC = () => {
       }
     }
   }, [inputValue, currentConfig, solBalance]);
+
+  const handleStake = async () => {
+    if (!publicKey || !stepAta || Number.isNaN(inputValue)) {
+      return;
+    }
+
+    const tx = await stakeStep(connection, publicKey, stepAta, xStepAta, Number(inputValue) * LAMPORTS_PER_SOL);
+    handleTx(connection, tx, sendTransaction);
+  };
 
   return (
     <div className="w-full max-w-[450px]">
@@ -116,6 +131,12 @@ export const StakingInputForm: FC = () => {
         className="w-full h-full max-h-[60px] px-4 py-2 text-primary bg-primary-bg rounded-sm mt-5 font-semibold transition duration-500 ease-in-out
                 hover:bg-primary hover:text-black disabled:text-disabled-text disabled:bg-disabled-bg"
         disabled={buttonDisabled}
+        onClick={() => {
+          if (isStaking) {
+            handleStake();
+          } else {
+          }
+        }}
       >
         {buttonText}
       </button>
