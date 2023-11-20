@@ -29,7 +29,7 @@ export const useWalletInfo = () => {
         const xTokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
           mint: XSTEP_TOKEN_MINT,
         });
-        setStepAta(xTokenAccounts.value[0]?.pubkey);
+        setXStepAta(xTokenAccounts.value[0]?.pubkey);
         setXStepBalance(xTokenAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0);
       } catch (error) {
         console.error("Error fetching balances", error);
