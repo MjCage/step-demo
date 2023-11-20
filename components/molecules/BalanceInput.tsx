@@ -1,6 +1,7 @@
 import { TokenSymbol, getTokenIconSrc } from "@/utils/token-symbols";
 import Image from "next/image";
 import { FC } from "react";
+import { MinitureButton } from "../atoms/MinitureButton";
 
 interface BalanceInputProps {
   title: string;
@@ -37,26 +38,24 @@ export const BalanceInput: FC<BalanceInputProps> = ({
   return (
     <div className={className}>
       <div className="flex items-end justify-between text-sm font-light mt-2">
-        <span className="text-lg leading-5">{title}</span>
-        <div className="leading-5">
-          Balance:{" "}
-          <button
-            type="button"
-            className={!onMaxBalance ? "" : "hover:underline"}
-            disabled={!onMaxBalance}
-            onClick={() => onMaxBalance?.((balance ?? 0).toString())}
-          >
-            {(balance ?? 0).toString()} {symbol}
-          </button>
+        <span>{title}</span>
+        <div className="text-gray-text flex items-center gap-1">
+          Balance: {(balance ?? 0).toString()}
+          {(balance ?? 0) > 0 && onMaxBalance && (
+            <>
+              <MinitureButton label="HALF" onClick={() => onMaxBalance(((balance ?? 0) / 2).toFixed(9))} />
+              <MinitureButton label="MAX" onClick={() => onMaxBalance((balance ?? 0).toString())} />
+            </>
+          )}
         </div>
       </div>
-      <div className="flex items-center w-full rounded bg-[#1c1c1c] mt-2 p-2">
+      <div className="flex items-center w-full rounded-lg bg-black mt-4 px-1 py-2 min-h-[64px]">
         <div className="flex items-center gap-2 ml-2 text-sm">
           <Image src={getTokenIconSrc(symbol)} alt="Icon of the input currency" width={32} height={32} />
           {symbol}
         </div>
         <input
-          className="w-full bg-transparent text-2xl p-2 text-right focus:outline-none"
+          className="w-full bg-transparent text-lg p-2 text-right focus:outline-none"
           value={value}
           placeholder="0.00"
           onChange={(e) => onChange(formatNumber(e.target.value))}

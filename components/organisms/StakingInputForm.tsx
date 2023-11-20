@@ -1,7 +1,8 @@
 "use client";
 
 import { FC, useEffect, useMemo, useState } from "react";
-import { IoSwapVerticalOutline } from "react-icons/io5";
+import { IoMdArrowDown } from "react-icons/io";
+import { TbArrowBarToDown, TbArrowBarUp } from "react-icons/tb";
 
 import { BalanceInput } from "../molecules/BalanceInput";
 import { TokenSymbol } from "@/utils/token-symbols";
@@ -58,43 +59,62 @@ export const StakingInputForm: FC = () => {
   }, [inputValue, currentConfig, solBalance]);
 
   return (
-    <div className="p-4 bg-accent rounded-lg w-full max-w-md flex flex-col items-center">
-      <BalanceInput
-        title={`You ${currentConfig.action}`}
-        symbol={currentConfig.input}
-        balance={currentConfig.input === TokenSymbol.STEP ? stepBalance : xStepBalance}
-        value={inputValue}
-        className="w-full"
-        onChange={(v) => {
-          setInputValue(v);
-          // ToDo: Adjust outputValue
-        }}
-        onMaxBalance={(v) => {
-          setInputValue(v);
-          /// ToDo: Adjust outputValue
-        }}
-      />
+    <div className="w-full max-w-[450px]">
+      <div className="flex text-sm font-semibold">
+        <button
+          type="button"
+          className={`w-[150px] py-2.5 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
+            isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
+          }`}
+          onClick={() => setIsStaking(true)}
+        >
+          <TbArrowBarToDown className="w-5 h-5" />
+          Stake
+        </button>
+        <button
+          type="button"
+          className={`w-[150px] py-2.5 flex items-center justify-center gap-4 rounded-t-lg duration-500 ease-in-out ${
+            !isStaking ? "bg-gray-bg text-primary" : "bg-gray-inactive hover:text-primary"
+          }`}
+          onClick={() => setIsStaking(false)}
+        >
+          <TbArrowBarUp className="w-5 h-5" />
+          Unstake
+        </button>
+      </div>
+      <div className="p-5 bg-gray-bg rounded-lg rounded-tl-none w-full flex flex-col items-center">
+        <BalanceInput
+          title={`You ${currentConfig.action}`}
+          symbol={currentConfig.input}
+          balance={currentConfig.input === TokenSymbol.STEP ? stepBalance : xStepBalance}
+          value={inputValue}
+          className="w-full"
+          onChange={(v) => {
+            setInputValue(v);
+            // ToDo: Adjust outputValue
+          }}
+          onMaxBalance={(v) => {
+            setInputValue(v);
+            /// ToDo: Adjust outputValue
+          }}
+        />
+        <IoMdArrowDown className="w-9 h-9 mt-2 text-secondary" />
+        <BalanceInput
+          title="You recieve"
+          symbol={currentConfig.output}
+          balance={currentConfig.output === TokenSymbol.STEP ? stepBalance : xStepBalance}
+          className="mt-3 w-full"
+          value={outputValue}
+          onChange={(v) => {
+            setOutputValue(v);
+            // ToDo: Adjust inputValue
+          }}
+        />
+      </div>
       <button
         type="button"
-        className="mt-5 text-2xl text-black p-2 bg-white rounded-full hover:bg-opacity-80 transition duration-300 ease-in-out"
-        onClick={() => setIsStaking((state) => !state)}
-      >
-        <IoSwapVerticalOutline />
-      </button>
-      <BalanceInput
-        title="You recieve"
-        symbol={currentConfig.output}
-        balance={currentConfig.output === TokenSymbol.STEP ? stepBalance : xStepBalance}
-        className="mt-3 w-full"
-        value={outputValue}
-        onChange={(v) => {
-          setOutputValue(v);
-          // ToDo: Adjust inputValue
-        }}
-      />
-      <button
-        type="button"
-        className="w-full px-4 py-2 text-white bg-primary hover:bg-opacity-80 active:bg-opacity-70 rounded mt-6 text-xl font-semibold transition duration-200 ease-in-out disabled:bg-gray-600"
+        className="w-full h-full max-h-[60px] px-4 py-2 text-primary bg-primary-bg rounded-sm mt-5 font-semibold transition duration-500 ease-in-out
+                hover:bg-primary hover:text-black disabled:text-disabled-text disabled:bg-disabled-bg"
         disabled={buttonDisabled}
       >
         {buttonText}
