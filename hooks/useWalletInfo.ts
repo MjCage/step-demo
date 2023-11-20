@@ -23,13 +23,13 @@ export const useWalletInfo = () => {
         const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
           mint: STEP_TOKEN_MINT,
         });
-        setStepAta(tokenAccounts.value[0].pubkey);
+        setStepAta(tokenAccounts.value[0]?.pubkey);
         setStepBalance(tokenAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0);
 
         const xTokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
           mint: XSTEP_TOKEN_MINT,
         });
-        setStepAta(xTokenAccounts.value[0].pubkey);
+        setStepAta(xTokenAccounts.value[0]?.pubkey);
         setXStepBalance(xTokenAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0);
       } catch (error) {
         console.error("Error fetching balances", error);
