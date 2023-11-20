@@ -39,7 +39,7 @@ export const StakingInputForm: FC = () => {
     const inputAmount = Number(inputValue);
 
     if (isNaN(inputAmount) || inputAmount === 0) {
-      setButtonText(capitalizeFirstLetter(currentConfig.action));
+      setButtonText("Enter an amount");
       setButtonDisabled(true);
     } else {
       if (currentConfig.input === TokenSymbol.STEP && inputAmount > (stepBalance ?? 0)) {
