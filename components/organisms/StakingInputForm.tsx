@@ -29,7 +29,7 @@ const config = [
 export const StakingInputForm: FC = () => {
   const { connection } = useConnection();
   const { sendTransaction } = useWallet();
-  const { solBalance, stepBalance, xStepBalance, refetchBalances } = useWalletInfo();
+  const { solBalance, stepBalance, xStepBalance } = useWalletInfo();
   const { stepPerXStep, stakeStep, unstakeStep } = useStepStaking();
 
   const [isStaking, setIsStaking] = useState(true);
@@ -72,7 +72,6 @@ export const StakingInputForm: FC = () => {
 
     const tx = await stakeStep(Number(inputValue) * LAMPORTS_PER_SOL);
     await handleTx(connection, tx, sendTransaction);
-    refetchBalances();
   };
 
   const handleUnstake = async () => {
@@ -82,7 +81,6 @@ export const StakingInputForm: FC = () => {
 
     const tx = await unstakeStep(Number(inputValue) * LAMPORTS_PER_SOL);
     await handleTx(connection, tx, sendTransaction);
-    refetchBalances();
   };
 
   return (

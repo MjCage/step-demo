@@ -47,6 +47,20 @@ export const useWalletInfo = () => {
     fetchBalances();
   }, [fetchBalances]);
 
+  useEffect(() => {
+    let subId: number | null = null;
+
+    if (publicKey) {
+      subId = connection.onAccountChange(publicKey, fetchBalances, "confirmed");
+    }
+
+    return () => {
+      if (subId) {
+        connection.removeAccountChangeListener(subId);
+      }
+    };
+  }, [publicKey, connection]);
+
   return {
     publicKey,
     solBalance,
@@ -54,6 +68,5 @@ export const useWalletInfo = () => {
     xStepBalance,
     stepAta,
     xStepAta,
-    refetchBalances: fetchBalances,
   };
 };
