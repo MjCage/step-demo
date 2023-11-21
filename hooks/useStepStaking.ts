@@ -1,7 +1,7 @@
 import { IDL as stepStakingIdl } from "../target/types/step_staking";
 import { STAKING_PROGRAM, STEP_TOKEN_MINT, XSTEP_TOKEN_MINT } from "@/utils/addresses";
 import { AnchorProvider, BN, Program } from "@coral-xyz/anchor";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useWalletInfo } from "./useWalletInfo";
@@ -13,7 +13,6 @@ import {
 
 export const useStepStaking = () => {
   const { connection } = useConnection();
-  const { signTransaction } = useWallet();
   const { publicKey, stepAta, xStepAta } = useWalletInfo();
 
   const [vaultPubkey, setVaultPubkey] = useState<PublicKey>();
