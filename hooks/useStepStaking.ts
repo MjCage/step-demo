@@ -25,9 +25,7 @@ export const useStepStaking = () => {
       connection,
       {
         signTransaction: (tx) => {
-          if (!signTransaction) throw new Error("Not implemented");
-
-          return signTransaction(tx);
+          throw new Error("Not implemented");
         },
         signAllTransactions: () => {
           throw new Error("Not implemented");
@@ -38,7 +36,7 @@ export const useStepStaking = () => {
     );
 
     return new Program(stepStakingIdl, STAKING_PROGRAM, provider);
-  }, [connection, stepStakingIdl]);
+  }, [connection]);
 
   useEffect(() => {
     const fetchVaultInfos = async () => {
@@ -94,7 +92,7 @@ export const useStepStaking = () => {
 
       return stakeTx;
     },
-    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta],
+    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta, program.methods],
   );
 
   const unstakeStep = useCallback(
@@ -129,7 +127,7 @@ export const useStepStaking = () => {
 
       return unstakeTx;
     },
-    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta],
+    [publicKey, vaultBump, vaultPubkey, stepAta, xStepAta, program.methods],
   );
 
   return {

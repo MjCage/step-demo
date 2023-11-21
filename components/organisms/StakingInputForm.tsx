@@ -63,7 +63,7 @@ export const StakingInputForm: FC = () => {
         setButtonDisabled(false);
       }
     }
-  }, [inputValue, currentConfig, solBalance]);
+  }, [inputValue, currentConfig, solBalance, stepBalance, xStepBalance]);
 
   const handleStake = async () => {
     if (Number.isNaN(inputValue)) {

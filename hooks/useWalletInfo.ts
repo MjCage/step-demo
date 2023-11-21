@@ -1,7 +1,7 @@
 import { STEP_TOKEN_MINT, XSTEP_TOKEN_MINT } from "@/utils/addresses";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export const useWalletInfo = () => {
   const { connection } = useConnection();
@@ -14,7 +14,7 @@ export const useWalletInfo = () => {
   const [stepAta, setStepAta] = useState<PublicKey | null>(null);
   const [xStepAta, setXStepAta] = useState<PublicKey | null>(null);
 
-  const fetchBalances = async () => {
+  const fetchBalances = useCallback(async () => {
     if (publicKey && connected) {
       try {
         const balance = await connection.getBalance(publicKey);
@@ -41,11 +41,11 @@ export const useWalletInfo = () => {
       setStepAta(null);
       setXStepAta(null);
     }
-  };
+  }, [publicKey, connected, connection]);
 
   useEffect(() => {
     fetchBalances();
-  }, [publicKey, connected]);
+  }, [fetchBalances]);
 
   return {
     publicKey,
