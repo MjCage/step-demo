@@ -33,6 +33,7 @@ export const StakingInputForm: FC = () => {
   const { stepPerXStep, stakeStep, unstakeStep } = useStepStaking();
 
   const [isStaking, setIsStaking] = useState(true);
+  const [isProcessing, setIsProccessing] = useState(false);
 
   const [inputValue, setInputValue] = useState("");
   const [outputValue, setOutputValue] = useState("");
@@ -43,6 +44,11 @@ export const StakingInputForm: FC = () => {
   const currentConfig = useMemo(() => config[isStaking ? 0 : 1], [isStaking]);
 
   useEffect(() => {
+    if (isProcessing) {
+      setButtonDisabled(true);
+      return;
+    }
+
     const inputAmount = Number(inputValue);
 
     if (isNaN(inputAmount) || inputAmount === 0) {
@@ -63,12 +69,14 @@ export const StakingInputForm: FC = () => {
         setButtonDisabled(false);
       }
     }
-  }, [inputValue, currentConfig, solBalance, stepBalance, xStepBalance]);
+  }, [inputValue, currentConfig, solBalance, stepBalance, xStepBalance, isProcessing]);
 
   const handleAction = async () => {
     if (Number.isNaN(inputValue)) {
       return;
     }
+
+    setIsProccessing(true);
 
     let tx: Transaction;
     if (isStaking) {
@@ -78,6 +86,7 @@ export const StakingInputForm: FC = () => {
     }
 
     await handleTx(connection, tx, sendTransaction);
+    setIsProccessing(false);
   };
 
   return (

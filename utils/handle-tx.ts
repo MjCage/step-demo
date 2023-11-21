@@ -21,7 +21,7 @@ export const handleTx = async (
 
     const txPromise = connection.confirmTransaction({ blockhash, lastValidBlockHeight, signature });
 
-    toast.promise(txPromise, {
+    await toast.promise(txPromise, {
       loading: "Transaction was sent! Please wait.",
       success: () => `Transaction successful!`,
       error: () => "Ups, something went wrong. Try again!",
